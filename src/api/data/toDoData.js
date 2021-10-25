@@ -3,15 +3,21 @@ import firebaseConfig from '../apiKeys';
 
 const baseUrl = firebaseConfig.databaseURL;
 
-const getToDos = () => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/todo.json?orderBy="complete"&equalTo=false`)
+const getToDos = (value) => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/todo.json?orderBy="complete"&equalTo=${value}`)
+    .then((response) => resolve(Object.values(response.data)))
+    .catch(reject);
+});
+
+const getEveryDos = () => new Promise((resolve, reject) => {
+  axios.get(`${baseUrl}/todo.json`)
     .then((response) => resolve(Object.values(response.data)))
     .catch(reject);
 });
 
 const getAllToDos = () => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/todo.json?orderBy="complete"&equalTo=true`)
-    .then((response) => resolve(Object.values(response.data)))
+  getToDos(true)
+    .then((todoArray) => resolve(todoArray))
     .catch(reject);
 });
 
@@ -20,7 +26,7 @@ const createTodo = (obj) => new Promise((resolve, reject) => {
     .then((response) => {
       const firebaseKey = response.data.name;
       axios.patch(`${baseUrl}/todo/${firebaseKey}.json`, { firebaseKey }).then(() => {
-        getToDos().then(resolve);
+        getToDos(false).then(resolve);
       });
     })
     .catch(reject);
@@ -29,13 +35,20 @@ const createTodo = (obj) => new Promise((resolve, reject) => {
 const deleteTodo = (firebaseKey) => new Promise((resolve, reject) => {
   axios.delete(`${baseUrl}/todo/${firebaseKey}.json`)
     .then(() => {
-      getToDos().then(resolve);
+      getToDos(false).then(resolve);
+    }).catch(reject);
+});
+
+const deleteCompletedTodo = (firebaseKey) => new Promise((resolve, reject) => {
+  axios.delete(`${baseUrl}/todo/${firebaseKey}.json`)
+    .then(() => {
+      getAllToDos(true).then(resolve);
     }).catch(reject);
 });
 
 const updateTodo = (obj) => new Promise((resolve, reject) => {
   axios.patch(`${baseUrl}/todo/${obj.firebaseKey}.json`, obj).then(() => {
-    getToDos().then(resolve);
+    getToDos(false).then(resolve);
   }).catch(reject);
 });
 
@@ -45,4 +58,6 @@ export {
   deleteTodo,
   updateTodo,
   getAllToDos,
+  deleteCompletedTodo,
+  getEveryDos,
 };
