@@ -1,8 +1,9 @@
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
 @import 'globals';
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
 
 body {
-  background-color: rgb(90, 136, 137) !important;
+  background-color: rgb(35, 41, 41) !important;
 }
 
 .btn {
@@ -10,33 +11,61 @@ body {
 }
 
 .namez {
-  flex-wrap: wrap;
-  margin-left: 225px;
+  margin-left: 330px;
   margin-bottom: 50px;
-}
-
-.navStylez {
-  margin-top: 225px;
-  margin-left: 450px;
-  .search-bar {
-    width: 400px;
+  font-family: 'Archivo Black', sans-serif;
+  color: white;
+  .png {
+    height: 40px;
   }
 }
 
+.navStylez {
+  margin-top: 100px;
+  margin-left: 310px;
+  margin-bottom: 50px;
+  .search-bar {
+    width: 650px;
+    height: 35px;
+  }
+}
+
+.content-btn {
+ margin-bottom: 300px;
+}
+
 .todoStylez {
- margin-left: 325px;
+ margin-left: 300px;
+ font-size: smaller;
+ margin-right: 150px;
+}
+
+.dropDown {
+  height: 35px;
+}
+
+.routers {
+  margin-left: 520px;
+  margin-bottom: 10px;
+  margin-top: 25px;
 }
 
 .todoz {
   flex-wrap: wrap;
   margin: 10px;
-  text-align: center;
   width: 800px;
   height: 80px;
+  font-size: 18px;
+  text-align: left;
   .btn-success {
     float: left;
+    margin-right: 25px;
   }
-  .btn-info, .btn-danger {
+  .btn-danger {
+      float: right;
+    }
+
+    .btn-info {
       float: right;
     }
 }

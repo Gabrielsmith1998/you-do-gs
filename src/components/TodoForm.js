@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  createTodo,
-  getAllToDos,
-  getToDos,
-  updateTodo,
-} from '../api/data/toDoData';
+import { createTodo, updateTodo } from '../api/data/toDoData';
 
 const initialState = {
   name: '',
   complete: false,
   uid: '',
+  category: '',
 };
 
-export default function TodoForm({ obj, setArray, setEditItem }) {
+export default function TodoForm({ obj, setToDo, setEditItem }) {
   const [formInput, setFormInput] = useState(initialState);
 
   const handleChange = (e) => {
@@ -23,12 +19,20 @@ export default function TodoForm({ obj, setArray, setEditItem }) {
     }));
   };
 
+  const handleChangeCategory = (e) => {
+    setFormInput((prevState) => ({
+      ...prevState,
+      category: e.target.value,
+    }));
+  };
+
   useEffect(() => {
     if (obj.firebaseKey) {
       setFormInput({
         name: obj.name,
         firebaseKey: obj.firebaseKey,
         complete: obj.complete,
+        category: obj.category,
         date: obj.date,
         uid: obj.uid,
       });
@@ -40,30 +44,20 @@ export default function TodoForm({ obj, setArray, setEditItem }) {
     setEditItem({});
   };
 
-  const handleClick = (method) => {
-    if (method === 'filter') {
-      getAllToDos(obj.firebaseKey).then(setArray);
-    } else if (method === 'unfilter') {
-      getToDos(obj.firebaseKey).then(setArray);
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (obj.firebaseKey) {
       updateTodo(formInput).then((todos) => {
-        setArray(todos);
+        setToDo(todos);
         resetForm();
       });
     } else {
       createTodo({ ...formInput, date: new Date() }).then((todos) => {
-        setArray(todos);
+        setToDo(todos);
         resetForm();
       });
     }
   };
-
-  const objTest = [{ ...obj }];
 
   return (
     <>
@@ -71,7 +65,9 @@ export default function TodoForm({ obj, setArray, setEditItem }) {
         <div className="navStylez">
           <form onSubmit={handleSubmit}>
             <label htmlFor="name">
-              <div className="namez">YOU-DO</div>
+              <div className="namez">
+                <h1>YOU-DO</h1>
+              </div>
               <input
                 className="search-bar"
                 name="name"
@@ -80,25 +76,22 @@ export default function TodoForm({ obj, setArray, setEditItem }) {
                 onChange={handleChange}
                 required
               />
+              <select
+                className="dropDown"
+                category="category"
+                value={formInput.category}
+                id="category"
+                onChange={handleChangeCategory}
+                required
+              >
+                <option value="">Cat</option>
+                <option value="Cat 1">Cat 1</option>
+                <option value="Cat 2">Cat 2</option>
+                <option value="Cat 3">Cat 3</option>
+              </select>
             </label>
             <button className="btn btn-success" type="submit">
               {obj.firebaseKey ? 'UPDATE' : 'SUBMIT'}
-            </button>
-            <button
-              onClick={() => handleClick('unfilter')}
-              className="btn btn-warning"
-              type="button"
-            >
-              {objTest.filter((test) => test.complete === false)
-                ? 'Open'
-                : 'Closed'}
-            </button>
-            <button
-              onClick={() => handleClick('filter')}
-              className="btn btn-dark"
-              type="button"
-            >
-              {obj ? 'Closed' : 'open'}
             </button>
           </form>
         </div>
@@ -115,8 +108,9 @@ TodoForm.propTypes = {
     date: PropTypes.string,
     uid: PropTypes.string,
     firebaseKey: PropTypes.string,
+    category: PropTypes.string,
   }),
-  setArray: PropTypes.func.isRequired,
+  setToDo: PropTypes.func.isRequired,
   setEditItem: PropTypes.func.isRequired,
 };
 

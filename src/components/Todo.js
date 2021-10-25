@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { Alert } from 'reactstrap';
 import { deleteTodo, updateTodo } from '../api/data/toDoData';
 
-export default function Todo({ todo, setArray, setEditItem }) {
+export default function Todo({ todo, setToDo, setEditItem }) {
   const handleClick = (method) => {
     if (method === 'delete') {
-      deleteTodo(todo.firebaseKey).then(setArray);
+      deleteTodo(todo.firebaseKey).then(setToDo);
     } else {
-      updateTodo({ ...todo, complete: true }).then(setArray);
+      updateTodo({ ...todo, complete: true }).then(setToDo);
     }
   };
   return (
@@ -25,19 +25,19 @@ export default function Todo({ todo, setArray, setEditItem }) {
             </button>
             {todo.name}
             <button
-              onClick={() => setEditItem(todo)}
-              className="btn btn-info"
-              type="button"
-            >
-              EDIT
-            </button>
-            <button
               onClick={() => handleClick('delete')}
               className="btn btn-danger"
               id="delete"
               type="button"
             >
               DELETE
+            </button>
+            <button
+              onClick={() => setEditItem(todo)}
+              className="btn btn-info"
+              type="button"
+            >
+              EDIT
             </button>
           </Alert>
         </div>
@@ -53,7 +53,8 @@ Todo.propTypes = {
     date: PropTypes.string,
     uid: PropTypes.string,
     firebaseKey: PropTypes.string,
+    category: PropTypes.string,
   }).isRequired,
-  setArray: PropTypes.func.isRequired,
+  setToDo: PropTypes.func.isRequired,
   setEditItem: PropTypes.func.isRequired,
 };
